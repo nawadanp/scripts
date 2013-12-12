@@ -16,4 +16,4 @@ OAUTH_TOKEN_SECRET=""
 
 twitter = Twython(APP_KEY,APP_SECRET,OAUTH_TOKEN,OAUTH_TOKEN_SECRET)
 
-twitter.update_status(status="Aujourd'hui, nous sommes le"+str(now)+". Il y a "+str(delta.days)+" jours, nous étions le 04/11/2011...)
+twitter.update_status(status="Aujourd'hui, nous sommes le"+str(now)+". Il y a "+str(delta.days)+" jours, nous étions le 04/11/2011...")
