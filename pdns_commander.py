@@ -1,4 +1,4 @@
-#!/usr/bin/python3.2
+#!/usr/bin/python3
 
 import sqlite3, sys, getopt
 
@@ -18,6 +18,15 @@ class PdnsDomain:
     def del_domain(self):
         query = "DELETE FROM domains WHERE name='"+self.name+"'"
         bdd_modif("/tmp/bdd2.sqlite3", query)
+
+    def show_domain(self):
+        query = "SELECT id FROM domains WHERE name='"+self.name+"'"
+        result = bdd_select(pdns_bdd, query)
+        result2 = result.fetchone()
+        self.id = result2[0]
+        query = "SELECT * FROM records WHERE Domain_Id='"+str(self.id)+"'"
+        result = bdd_select(pdns_bdd, query)
+        return result
         
 
 class PdnsRecord:
@@ -30,6 +39,8 @@ class PdnsRecord:
         self.ttl = ttl
         self.priority = priority
         self.change_date = change_date
+
+    def 
 
 def bdd_select(database,query):
     database = sqlite3.connect(database)
@@ -60,7 +71,7 @@ def usage():
 
 def main(argv):
     try: 
-        opts, args = getopt.getopt(argv, "ha:d:", ["help", "action=", "domain="])
+        opts, args = getopt.getopt(argv, "ha:n:t:v:", ["help", "action=", "type=", "name=", "value="])
 
     except getopt.GetoptError:
         usage()
@@ -73,16 +84,51 @@ def main(argv):
             sys.exit(0)
         elif opt in ("-a", "--action"):
             action = arg
-        elif opt in ("-d", "--domain"):
-            domain = arg
+        elif opt in ("-t", "--type"):
+            type = arg
+        elif opt in ("-n", "--name"):
+            name = arg
+        elif opt in ("-v", "--value"):
+            value = arg
 
-    if action == "add_domain":
-        NewDomain = PdnsDomain(domain)
-        NewDomain.add_domain()
-    elif action == "del_domain":
-        del_domain()
-    elif action == "list_domains":
-        list_domains() 
+    if action == "add":
+        if type == "domain":
+            MyDomain = PdnsDomain(value)
+            MyDomain.add_domain()
+        elif type == "record":
+            MyRecord = PdnsRecord(value)
+            MyRecord.add_record()
+        else:
+            print("Type "+type+" not available")
+            usage()
+    elif (action == "delete" or action == "del"):
+        if type == "domain":
+            MyDomain = PdnsDomain(value)
+            Mydomain.deldomain()
+        elif type == "record":
+            MyRecord = PdnsRecord(value)
+            MyRecord.delrecord
+        else:
+            print("Type "+type+" not available")
+            usage()
+    elif action == "list":
+         if type == "domain":
+            list_domains() 
+    elif action == "show":
+        if type == "domain":
+            MyDomain = PdnsDomain(value)
+            domains = MyDomain.show_domain()
+            for i in domains.fetchall():
+                print(i)
+        #    print(domains.fetchall())
+        elif type == "record":
+            MyRecord = PdnsRecord(value)
+            MyRecord.showRecord()
+        else:
+            print("Type "+type+" not available")
+            usage()
+
+main(sys.argv[1:])
 
 
 
@@ -91,7 +137,6 @@ def main(argv):
     #for domain in domainlist:
     #    print(domain)
 
-main(sys.argv[1:])
 
 #mydomain = PdnsDomain("mondomaine2.fr")
 #mydomain.del_domain()
